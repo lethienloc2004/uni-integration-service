@@ -19,7 +19,7 @@ trong mã nguồn đều trỏ về tài liệu đó.
 | [HUONG-DAN-CHAY.md](HUONG-DAN-CHAY.md) | Chạy dự án trên IntelliJ, cấu hình, gỡ rối |
 | [KICH-BAN-TEST.md](KICH-BAN-TEST.md) | **Kịch bản chạy thử một mạch** — 1 sinh viên, 1 lớp, đi hết 8 INT trong ~25 phút |
 | [HUONG-DAN-KIEM-THU.md](HUONG-DAN-KIEM-THU.md) | Tra cứu kiểm thử từng INT riêng lẻ: nhập gì, ở đâu, thứ tự nào |
-| [docs/BaoCao-BaiTapLon-Integration-Service.docx](docs/BaoCao-BaiTapLon-Integration-Service.docx) | **Báo cáo bài tập lớn bản Word** — sản phẩm nộp bài số 10, 105 trang, 5 chương + phụ lục A–F |
+| [docs/BaoCao-BaiTapLon-Integration-Service.docx](docs/BaoCao-BaiTapLon-Integration-Service.docx) | **Báo cáo bài tập lớn bản Word** — sản phẩm nộp bài số 10, hơn 100 trang, 5 chương + phụ lục A–F |
 | [docs/TEST-REPORT.md](docs/TEST-REPORT.md) | **Test Report** — đối chiếu 12 kịch bản chấm T01–T12, nộp cho giảng viên |
 | [docs/diagrams/](docs/diagrams/) | Sơ đồ kiến trúc và ba sơ đồ tuần tự (sản phẩm nộp bài số 03 và 06) |
 | [docs/screenshots/](docs/screenshots/) | 41 ảnh bằng chứng bốn tầng cho 8 INT — đã chèn vào Phụ lục C |

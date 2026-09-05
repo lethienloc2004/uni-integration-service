@@ -1,0 +1,29 @@
+Bản quyền (c) 2026 Lê Thiên Lộc. Giữ toàn bộ quyền.
+
+Mã nguồn trong kho này là sản phẩm bài tập lớn CÁ NHÂN của học phần
+"Kiến trúc và Tích hợp hệ thống", Viện Quản trị và Công nghệ, Trường Đại
+học Thành Đô.
+
+Kho được để công khai với một mục đích duy nhất: để giảng viên và người
+chấm bài xem được mã nguồn cùng lịch sử commit mà không cần được mời làm
+cộng tác viên.
+
+ĐƯỢC PHÉP: đọc, tham khảo cách làm, trích dẫn có ghi nguồn.
+
+KHÔNG ĐƯỢC PHÉP: sao chép toàn bộ hoặc một phần mã nguồn, tài liệu, sơ đồ
+hay báo cáo trong kho này để nộp làm bài tập, đồ án, khóa luận hoặc sản
+phẩm học thuật của người khác — kể cả khi đã sửa tên biến, đổi cấu trúc
+thư mục hay diễn đạt lại. Hành vi đó là đạo văn, và lịch sử commit công
+khai của kho này đủ để chứng minh thời điểm công bố.
+
+Mọi hình thức sử dụng khác cần có sự đồng ý trước bằng văn bản của tác giả.
+
+PHẦN MỀM ĐƯỢC CUNG CẤP "NGUYÊN TRẠNG", KHÔNG KÈM BẤT KỲ BẢO ĐẢM NÀO. TÁC
+GIẢ KHÔNG CHỊU TRÁCH NHIỆM CHO BẤT KỲ THIỆT HẠI NÀO PHÁT SINH TỪ VIỆC SỬ
+DỤNG PHẦN MỀM.
+
+---
+
+Ghi chú về hai hệ thống nguồn: UniSIS và UniLearn LMS là gói mô phỏng do
+giảng viên cung cấp. Mã nguồn của hai hệ thống đó KHÔNG nằm trong kho này
+và không thuộc bản quyền của tác giả.

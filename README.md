@@ -3,6 +3,10 @@
 Integration Service cho học phần **Kiến trúc và Tích hợp hệ thống** — kết nối UniSIS (SIS)
 và UniLearn (LMS) qua REST API và Webhook.
 
+> **Đây là bài tập lớn cá nhân.** Kho để công khai chỉ nhằm cho giảng viên và người chấm
+> xem được mã nguồn cùng lịch sử commit mà không cần được mời. Bạn được đọc và tham khảo,
+> nhưng **không được sao chép để nộp làm bài của mình** — xem [LICENSE](LICENSE).
+
 Đây **không phải** một API nghiệp vụ. Dịch vụ này chủ yếu là HTTP *client* của hai hệ thống
 nguồn; phần phục vụ vào chỉ gồm bộ nhận webhook, `/health` và vài endpoint quản trị.
 

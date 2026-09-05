@@ -1,0 +1,38 @@
+# =====================================================================
+# Ban DONG GOI NHE — dung khi may khong du tai nguyen cho build da tang.
+#
+# Khac gi so voi `Dockerfile`:
+#   - KHONG chay Maven ben trong container. File jar phai duoc dong goi truoc tren may.
+#   - Chi keo ve anh JRE (~200 MB) thay vi anh Maven (~500 MB) + toan bo phu thuoc.
+#   - Dung trong vai giay thay vi vai phut, va gan nhu khong ton RAM.
+#
+# Danh doi: khong con tu chua. Nguoi dung phai chay `mvn package` truoc.
+# Khi nop bai nen dung `Dockerfile` (tu chua, chuan hon); file nay de xac minh nhanh
+# va de trien khai tren may yeu.
+#
+# Cach dung:
+#     mvn -DskipTests package
+#     docker build -f Dockerfile.jar -t uni-integration:jar .
+#     docker run --rm --env-file .env -p 8080:8080 -v "${PWD}/data:/app/data" uni-integration:jar
+# =====================================================================
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+
+# Khong chay bang root
+RUN groupadd -r -g 1001 appuser \
+ && useradd -r -u 1001 -g appuser appuser
+
+# Chi lay dung file jar da dong goi. Loai tru *.jar.original do spring-boot-maven-plugin
+# de lai sau khi repackage.
+COPY target/uni-integration-service-*.jar app.jar
+
+RUN mkdir -p /app/data && chown -R appuser:appuser /app
+VOLUME /app/data
+USER appuser
+
+EXPOSE 8080
+
+# Endpoint tham do la GET /health (NFR-09). Khong khai bao HEALTHCHECK o day vi anh JRE
+# khong bao dam co wget/curl — xem giai thich trong Dockerfile.
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

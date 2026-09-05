@@ -1,0 +1,37 @@
+@startuml
+!include _style.puml
+title Hình 2 — Tạo đăng ký học khi User và Course đều chưa tồn tại (INT-03)
+
+participant "UniSIS"   as SIS
+participant "Receiver" as RECV
+database    "inbox_event" as INBOX
+participant "Worker"   as W
+participant "UniLearn" as LMS
+
+SIS -> RECV : webhook enrollment.created (evt_1)
+RECV -> INBOX : INSERT (SIS, evt_1)
+RECV --> SIS : 200 OK  < 50ms
+note right of RECV : Không gọi API đích tại đây\nvì timeout của nguồn chỉ 4 giây
+
+W -> INBOX : UPDATE ... WHERE status = RECEIVED
+W -> W : ensureMembership(SV07LAB01, SEC-TEAM07-LAB01)
+
+group ensureUser — phụ thuộc 1
+  W -> LMS : GET /users?externalRef=SV07LAB01
+  LMS --> W : rỗng
+  W -> LMS : POST /users
+  LMS --> W : 201 {id: 48329}
+  W -> INBOX : lưu id_mapping
+end
+
+group ensureCourse — phụ thuộc 2
+  W -> LMS : GET /courses?externalCode=SEC-TEAM07-LAB01
+  LMS --> W : 201 {id: 9849}  (tạo nếu thiếu)
+end
+
+W -> LMS : POST /courses/9849/members\n{userId: 48329, role: STUDENT}
+LMS --> W : 201
+W -> INBOX : status = DONE, action = CREATE
+
+note over W : Sự kiện đến trước khi có User/Course\nvẫn xử lý được ngay — không cần hàng chờ phụ thuộc
+@enduml

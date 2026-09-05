@@ -1,0 +1,32 @@
+@startuml
+!include _style.puml
+title Hình 3 — Lỗi tạm thời và thử lại có trạng thái lưu bền (kịch bản T10)
+
+participant "Worker" as W
+database    "inbox_event" as INBOX
+participant "RateLimitedApiClient" as C
+participant "UniLearn" as LMS
+
+W -> C : POST /users
+C -> LMS : POST /users
+LMS --> C : <color:#B00000>503 Service Unavailable</color>
+C --> W : lỗi tạm thời
+W -> INBOX : status = RETRYING, attempt = 1, nextAttemptAt = +1s
+
+... chờ 1 giây ...
+W -> C : POST /users  (lần 2)
+LMS --> C : <color:#B00000>503</color>
+W -> INBOX : status = RETRYING, attempt = 2, nextAttemptAt = +2s
+
+... chờ 2 giây ...
+W -> C : POST /users  (lần 3)
+LMS --> C : 201 Created
+W -> INBOX : status = DONE, attempt = 3
+
+note over W, LMS
+Nhánh 429 đi đường khác: đọc Retry-After và chờ đúng khoảng đó,
+KHÔNG dùng dãy backoff 1-2-4-8-16-32.
+Nhánh 4xx lỗi dữ liệu không thử lại: chuyển thẳng DEAD_LETTER.
+Cạn 6 lượt thử lại cũng chuyển DEAD_LETTER — không bao giờ thử vô hạn.
+end note
+@enduml

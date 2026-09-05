@@ -1,0 +1,34 @@
+@startuml
+!include _style.puml
+title Hình 4 — Đồng bộ ngược điểm đã publish từ UniLearn về UniSIS (INT-06)
+
+actor       "Giảng viên" as T
+participant "UniLearn"   as LMS
+participant "Receiver"   as RECV
+database    "inbox_event" as INBOX
+participant "Worker"     as W
+participant "UniSIS"     as SIS
+
+T -> LMS : Gradebook — Record grade 87.5 (DRAFT)
+note right of LMS : Chưa phát sự kiện nào.\nUniSIS phải chưa có điểm — đây là một phần của kiểm chứng.
+
+T -> LMS : Publish
+LMS -> RECV : webhook grade.published (evt_7)
+RECV -> INBOX : INSERT (LMS, evt_7)
+RECV --> LMS : 200 OK
+
+W -> INBOX : giành việc
+W -> W : đọc userExternalRef = SV07LAB01\nđọc courseExternalCode = SEC-TEAM07-LAB01
+note right of W : BẮT BUỘC dùng external reference.\nuserId/courseId nội bộ của LMS không có ý nghĩa ở SIS.
+W -> W : finalScore = round(87.5 / 10, 2) = 8.75
+
+W -> SIS : PUT /grades/SV07LAB01/SEC-TEAM07-LAB01\n{finalScore: 8.75, source: "LMS"}
+SIS --> W : 200 OK
+note right of SIS : letterGrade CÓ Ý không gửi —\nđể UniSIS tự tính theo quy tắc của mình.
+W -> INBOX : status = DONE
+
+note over W, SIS
+Nếu SIS trả 422 ENROLLMENT_NOT_FOUND: chuyển thẳng DEAD_LETTER.
+Integration Service KHÔNG được tự tạo enrollment — đó là thẩm quyền của UniSIS.
+end note
+@enduml

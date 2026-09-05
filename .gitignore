@@ -1,0 +1,39 @@
+# Build
+target/
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+# Dockerfile.jar la tep van ban, khong phai goi jar — quy tac *.jar o tren nuot nham.
+!Dockerfile.jar
+
+# NFR-07 — TUYET DOI khong commit bi mat. Chi .env.example duoc len kho ma.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Co so du lieu nhung va nhat ky — co the chua du lieu tenant
+data/
+*.mv.db
+*.trace.db
+*.log
+logs/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Run Configuration cua IntelliJ co chua CLIENT_SECRET nen KHONG duoc commit.
+# Cach tao lai: xem HUONG-DAN-CHAY.md muc 2.
+.run/
+.settings/
+.classpath
+.project
+
+# He dieu hanh
+.DS_Store
+Thumbs.db
+
+# Anh chup goc 2x — chi giu ban da cat trong docs/screenshots/
+docs/screenshots-goc/

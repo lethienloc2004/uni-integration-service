@@ -1,0 +1,114 @@
+spring:
+  application:
+    name: uni-integration-service
+
+  # Doc file .env o goc du an neu co — tinh nang san cua Spring Boot, khong can thu vien.
+  # "optional:" nghia la thieu file thi van khoi dong binh thuong.
+  # "[.properties]" bao Spring doc file khong co duoi nhu file properties.
+  # Nho vay khong phai dat bien moi truong trong IDE, va bi mat khong nam trong ma nguon.
+  config:
+    import: "optional:file:./.env[.properties]"
+
+  datasource:
+    url: jdbc:h2:file:./data/integration;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      ddl-auto: validate      # Flyway tao bang, khong de Hibernate tu sinh
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  h2:
+    console:
+      enabled: false          # chi bat o profile phat trien
+
+server:
+  port: ${PORT:8080}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+integration:
+  tenant-id: ${TENANT_ID:TEAM07}
+
+  sis:
+    base-url: ${SIS_URL:http://127.0.0.1:8001}
+    client-id: ${SIS_CLIENT_ID:${CLIENT_ID:WEB-CONSOLE}}
+    client-secret: ${SIS_CLIENT_SECRET:${CLIENT_SECRET:}}
+  lms:
+    base-url: ${LMS_URL:http://127.0.0.1:8002}
+    client-id: ${LMS_CLIENT_ID:${CLIENT_ID:WEB-CONSOLE}}
+    client-secret: ${LMS_CLIENT_SECRET:${CLIENT_SECRET:}}
+
+  # NFR-12 — token bucket chua 20% bien an toan tren gioi han 100 req/phut
+  rate-limit:
+    permits-per-minute: 80
+
+  # NFR-02 — hang doi thu lai co trang thai luu ben, khong phai retry trong bo nho
+  retry:
+    max-attempts: 6
+    backoff-seconds: [1, 2, 4, 8, 16, 32]
+
+  # Muc 3.3 — payload duoc dung lam desired khi su kien con moi
+  desired-hint:
+    max-age-seconds: 60
+
+  worker:
+    enabled: true
+    poll-interval-ms: 1000
+    batch-size: 20
+
+  webhook:
+    enabled: ${ENABLE_WEBHOOK:true}
+    public-url: ${WEBHOOK_PUBLIC_URL:}
+
+  poller:
+    enabled: ${ENABLE_POLLING:true}
+    interval-ms: 10000
+    overlap-seconds: 5        # muc 6.3 — bu cho phep so sanh "lon hon tuyet doi"
+
+  # NFR-06 — doi soat theo tap hop, ~6 request moi luot
+  reconciler:
+    run-on-startup: ${ENABLE_RECONCILE_ON_STARTUP:true}   # BAT BUOC (muc 6.5)
+    run-on-schedule: ${ENABLE_RECONCILE_SCHEDULE:true}    # lop phong thu, tat duoc dau tien
+    interval-ms: 600000
+
+logging:
+  level:
+    vn.thanhdo.integration: INFO
+    org.springframework.web: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  h2:
+    console:
+      enabled: true
+logging:
+  level:
+    vn.thanhdo.integration: DEBUG

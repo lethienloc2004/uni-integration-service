@@ -1,0 +1,32 @@
+@startuml
+!include _style.puml
+skinparam linetype ortho
+skinparam nodesep 70
+skinparam ranksep 120
+
+title Hình 1.1 — Sơ đồ ngữ cảnh: phạm vi đề tài và hai hệ thống nguồn
+
+actor "Phòng Đào tạo\ncố vấn học tập" as PDT
+actor "Giảng viên" as GV
+
+rectangle "UniSIS\n**Hệ thống thông tin sinh viên (System A)**\nnguồn sự thật: sinh viên · lớp học phần\nđăng ký học · điểm chính thức · cảnh báo" as SIS
+rectangle "UniLearn LMS\n**Hệ thống quản lý học tập (System B)**\nnguồn sự thật: tiến độ học · điểm thành phần\ntín hiệu rủi ro học tập" as LMS
+
+package "PHẠM VI XÂY DỰNG CỦA ĐỀ TÀI" {
+  component "Integration Service\nđồng bộ hai chiều · chống trùng · thử lại có backoff\nđối soát theo tập hợp · nhật ký kiểm toán\ncơ sở dữ liệu riêng lưu ánh xạ ID và hàng đợi sự kiện" as IS
+}
+
+PDT --> SIS : nhập hồ sơ, mở lớp,\nduyệt đăng ký học
+GV  --> LMS : chấm điểm, công bố điểm,\nđánh giá rủi ro
+
+SIS --> IS : sự kiện student,\nsection, enrollment
+LMS --> IS : sự kiện grade.published,\nlearner.at_risk
+
+IS -[#B00000]-> SIS : ghi điểm chính thức,\ncảnh báo cố vấn
+IS -[#B00000]-> LMS : ghi User, Course,\nMembership
+
+legend bottom
+Hai hệ thống nguồn do giảng viên cung cấp và KHÔNG được sửa; mọi truy cập đều qua REST API công khai.
+Đề tài chỉ xây dựng phần trong khung. Mũi tên đỏ là chiều ghi dữ liệu trở lại hai hệ thống nguồn.
+endlegend
+@enduml

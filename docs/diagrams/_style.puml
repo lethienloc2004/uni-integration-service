@@ -1,0 +1,44 @@
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName Calibri
+skinparam defaultFontSize 13
+skinparam roundCorner 8
+skinparam ArrowColor #2F5496
+skinparam ArrowFontSize 11
+skinparam NoteBackgroundColor #FFF7E0
+skinparam NoteBorderColor #D0B060
+skinparam NoteFontSize 12
+skinparam rectangle {
+  BorderColor #1F3864
+  BackgroundColor #D9E2F3
+  FontColor #1F3864
+  FontStyle bold
+  BorderThickness 2
+}
+skinparam package {
+  BorderColor #1F3864
+  BackgroundColor #FBFCFE
+  FontColor #1F3864
+  FontStyle bold
+}
+skinparam database {
+  BorderColor #B00000
+  BackgroundColor #FBF2E3
+  FontColor #7A2020
+  FontStyle bold
+}
+skinparam component {
+  BorderColor #2F5496
+  BackgroundColor #FFFFFF
+  FontColor #1F3864
+}
+skinparam sequence {
+  ParticipantBorderColor #1F3864
+  ParticipantBackgroundColor #D9E2F3
+  ParticipantFontColor #1F3864
+  LifeLineBorderColor #96A0B4
+  ArrowColor #2F5496
+  GroupBorderColor #96A0B4
+  GroupBackgroundColor #EEF1F7
+  GroupHeaderFontColor #465064
+}

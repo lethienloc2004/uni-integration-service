@@ -1,0 +1,53 @@
+@startuml
+!include _style.puml
+skinparam linetype ortho
+skinparam nodesep 26
+skinparam ranksep 58
+
+title Hình 1 — Kiến trúc tổng thể Integration Service
+
+rectangle "UniSIS\nnguồn sự thật: sinh viên · lớp · đăng ký · điểm" as SIS
+rectangle "UniLearn LMS\nnguồn sự thật: tiến độ học · điểm thô" as LMS
+
+package "Integration Service" {
+  component "Receiver\nghi inbox rồi trả 200 OK dưới 50ms\nkhông gọi API đích tại đây" as RECV
+  component "Poller\nxương sống bảo đảm không mất sự kiện\nGET /events?since= mỗi 10 giây" as POLL
+  component "Reconciler\nđối soát theo tập hợp · 6 request mỗi lượt\nsinh sự kiện tổng hợp kèm dữ liệu đã phân giải" as RECON
+
+  database "inbox_event\nUNIQUE(sourceSystem, eventId)\nTransactional Inbox + Idempotent Receiver" as INBOX
+
+  component "Worker\nensureUser · ensureCourse · ensureMembership\nsyncGrade · raiseAdvisingAlert" as WORKER
+
+  database "Integration DB\nid_mapping · poll_checkpoint\nintegration_log · dead_letter" as DB
+
+  component "RateLimitedApiClient\ntoken bucket 80/100 · Retry-After · tự lấy lại token" as CLIENT
+
+  RECV -[hidden]right- POLL
+  POLL -[hidden]right- RECON
+}
+
+SIS --> RECV  : webhook
+LMS --> RECV  : webhook
+SIS --> POLL  : GET /events
+LMS --> POLL  : GET /events
+SIS --> RECON : GET danh sách
+LMS --> RECON : GET danh sách
+
+RECV  --> INBOX
+POLL  --> INBOX
+RECON --> INBOX : sự kiện tổng hợp\nrecon:{runId}:{type}:{key}
+
+INBOX --> WORKER : giành việc bằng UPDATE có điều kiện
+WORKER --> DB
+WORKER --> CLIENT
+
+CLIENT -[#B00000]-> SIS : ghi dữ liệu vào hệ thống đích
+CLIENT -[#B00000]-> LMS
+
+legend bottom
+Webhook: độ trễ thấp, nhưng timeout 4 giây và nguồn không thử lại nên có thể mất sự kiện.
+Polling /events?since=: đọc bảng sự kiện bền vững nên bắt được cả những sự kiện webhook làm rớt.
+Reconciler: chữa phần lệch không có sự kiện tương ứng; chạy lúc khởi động và theo lệnh thủ công.
+Mũi tên đỏ là chiều ghi ngược trở lại hai hệ thống nguồn.
+endlegend
+@enduml
